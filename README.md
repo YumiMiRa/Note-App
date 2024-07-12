@@ -1,4 +1,4 @@
-# Project Name
+# Note
 
 This project is a web-based note-taking application built with PHP and JavaScript.
 

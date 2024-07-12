@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Notes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .note {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .note-text {
+            margin-bottom: 10px;
+        }
+        .note-time {
+            font-size: 12px;
+            color: #888;
+            padding-top: 5px;
+        }
+        .btn {
+            padding: 8px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .edit-btn, .delete-btn {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 3px 8px;
+            font-size: 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="welcomeContainer">
+        <h1 id="welcomeMsg">Welcome to Notes</h1>
+        <button id="startBtn" class="btn">Start</button>
+    </div>
+
+    <div class="container" id="notesContainer" style="display: none;">
+        <h2>Note</h2>
+        <p>Topic and Content :</p>
+        <textarea id="noteInput" rows="4" cols="50"></textarea><br>
+        <button id="addNoteBtn" class="btn">Add Note</button>
+        <button id="backBtn" class="btn" style="margin-left: 10px;">Back</button>
+        
+        <div id="notesList"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeContainer = document.getElementById('welcomeContainer');
+            const notesContainer = document.getElementById('notesContainer');
+            const welcomeMsg = document.getElementById('welcomeMsg');
+            const startBtn = document.getElementById('startBtn');
+            const backBtn = document.getElementById('backBtn');
+            const noteInput = document.getElementById('noteInput');
+            const addNoteBtn = document.getElementById('addNoteBtn');
+            const notesList = document.getElementById('notesList');
+
+            startBtn.addEventListener('click', function() {
+                welcomeContainer.style.display = 'none';
+                notesContainer.style.display = 'block';
+                loadNotes();
+            });
+
+            backBtn.addEventListener('click', function() {
+                notesContainer.style.display = 'none';
+                welcomeContainer.style.display = 'block';
+                welcomeMsg.style.display = 'block';
+                startBtn.style.display = 'block';
+            });
+
+            addNoteBtn.addEventListener('click', function() {
+                const noteText = noteInput.value.trim();
+                if (noteText !== '') {
+                    addNoteToStorage(noteText);
+                    noteInput.value = '';
+                }
+            });
+
+            function loadNotes() {
+                notesList.innerHTML = '';
+                const notes = getNotesFromStorage();
+                notes.forEach((note, index) => {
+                    const { text, time } = note;
+                    const noteDiv = document.createElement('div');
+                    noteDiv.classList.add('note');
+
+                    const noteText = document.createElement('p');
+                    noteText.classList.add('note-text');
+                    noteText.textContent = text;
+
+                    const noteTime = document.createElement('p');
+                    noteTime.classList.add('note-time');
+                    noteTime.textContent = formatDate(time);
+
+                    const editBtn = document.createElement('span');
+                    editBtn.classList.add('edit-btn');
+                    editBtn.textContent = 'Edit';
+                    editBtn.addEventListener('click', function() {
+                        editNote(index);
+                    });
+
+                    const deleteBtn = document.createElement('span');
+                    deleteBtn.classList.add('delete-btn');
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.addEventListener('click', function() {
+                        deleteNoteFromStorage(index);
+                    });
+
+                    noteDiv.appendChild(noteText);
+                    noteDiv.appendChild(noteTime);
+                    noteDiv.appendChild(editBtn);
+                    noteDiv.appendChild(deleteBtn);
+                    notesList.appendChild(noteDiv);
+                });
+
+                // Set note box colors based on current time
+                setNoteBoxColor();
+            }
+
+            function addNoteToStorage(noteText) {
+                const time = new Date().getTime();
+                let notes = getNotesFromStorage();
+                notes.push({ text: noteText, time });
+                localStorage.setItem('notes', JSON.stringify(notes));
+                loadNotes();
+            }
+
+            function editNote(index) {
+                const notes = getNotesFromStorage();
+                const noteText = prompt('Edit your note:', notes[index].text);
+                if (noteText !== null) {
+                    notes[index].text = noteText.trim();
+                    notes[index].time = new Date().getTime(); // Update the edit time
+                    localStorage.setItem('notes', JSON.stringify(notes));
+                    loadNotes();
+                }
+            }
+
+            function getNotesFromStorage() {
+                return JSON.parse(localStorage.getItem('notes')) || [];
+            }
+
+            function deleteNoteFromStorage(index) {
+                let notes = getNotesFromStorage();
+                notes.splice(index, 1);
+                localStorage.setItem('notes', JSON.stringify(notes));
+                loadNotes();
+            }
+
+            function formatDate(timestamp) {
+                const date = new Date(timestamp);
+                return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+            }
+
+            // Function to set note box color based on day and time
+            function setNoteBoxColor() {
+                const currentDate = new Date();
+                const currentDay = currentDate.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+                const currentHour = currentDate.getHours();
+                const currentMinute = currentDate.getMinutes();
+                const notes = document.querySelectorAll('.note');
+
+                notes.forEach(note => {
+                    const noteTimeElement = note.querySelector('.note-time');
+                    if (noteTimeElement) {
+                        const noteTimeText = noteTimeElement.textContent.trim();
+                        const { day, startHour, endHour, color } = parseNoteTime(noteTimeText);
+
+                        if (day === currentDay && currentHour >= startHour && currentHour <= endHour) {
+                            note.style.backgroundColor = color;
+                        }
+                    }
+                });
+            }
+
+            // Function to parse note time text and return day, start hour, end hour, and color
+            function parseNoteTime(noteTimeText) {
+                const parts = noteTimeText.split(' ');
+                const day = getDayIndex(parts[0]);
+                const timeRange = parts[1].split('-');
+                const startHour = parseInt(timeRange[0].split('.')[0]);
+                const endHour = parseInt(timeRange[1].split('.')[0]);
+                const color = timeRange[2];
+
+                return { day, startHour, endHour, color };
+            }
+
+            // Function to get day index from day name
+            function getDayIndex(dayName) {
+                switch (dayName) {
+                    case 'Sunday': return 0;
+                    case 'Monday': return 1;
+                    case 'Tuesday': return 2;
+                    case 'Wednesday': return 3;
+                    case 'Thursday': return 4;
+                    case 'Friday': return 5;
+                    case 'Saturday': return 6;
+                    default: return -1;
+                }
+            }
+
+            // Call setNoteBoxColor initially and every minute
+            setNoteBoxColor();
+            setInterval(setNoteBoxColor, 60000); // Update every minute
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+/* Note Styles */
+.note {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f9f9f9; /* Background color for note box */
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    position: relative;
+    overflow: hidden; /* Ensures note box doesn't expand */
+}
+
+.note h3 {
+    margin-top: 0;
+    color: #007bff;
+    font-size: 18px;
+}
+
+.note p {
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 14px;
+}
+
+.note-actions {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.note-actions button {
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+    border-radius: 3px;
+}
+
+/* Edit button style */
+.note-actions .edit-btn {
+    background-color: #ffc107; /* Yellow color for edit button */
+}
+
+/* Delete button style */
+.note-actions .delete-btn {
+    background-color: #dc3545; /* Red color for delete button */
+}

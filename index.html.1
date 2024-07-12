@@ -1,0 +1,453 @@
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Notes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .note {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .note-text {
+            margin-bottom: 10px;
+        }
+        .note-time {
+            font-size: 12px;
+            color: #888;
+        }
+        .btn {
+            padding: 8px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .edit-btn, .delete-btn {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 3px 8px;
+            font-size: 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="welcomeContainer">
+        <h1 id="welcomeMsg">Welcome to Notes</h1>
+        <button id="startBtn" class="btn">Start</button>
+    </div>
+
+    <div class="container" id="notesContainer" style="display: none;">
+        <h2>Note</h2>
+        <p>Topic and Content :</p>
+        <textarea id="noteInput" rows="4" cols="50"></textarea><br>
+        <button id="addNoteBtn" class="btn">Add Note</button>
+        <button id="backBtn" class="btn" style="margin-left: 10px;">Back</button>
+        
+        <div id="notesList"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeContainer = document.getElementById('welcomeContainer');
+            const notesContainer = document.getElementById('notesContainer');
+            const welcomeMsg = document.getElementById('welcomeMsg');
+            const startBtn = document.getElementById('startBtn');
+            const backBtn = document.getElementById('backBtn');
+            const noteInput = document.getElementById('noteInput');
+            const addNoteBtn = document.getElementById('addNoteBtn');
+            const notesList = document.getElementById('notesList');
+
+            startBtn.addEventListener('click', function() {
+                welcomeContainer.style.display = 'none';
+                notesContainer.style.display = 'block';
+                loadNotes();
+            });
+
+            backBtn.addEventListener('click', function() {
+                notesContainer.style.display = 'none';
+                welcomeContainer.style.display = 'block';
+                welcomeMsg.style.display = 'block';
+                startBtn.style.display = 'block';
+            });
+
+            addNoteBtn.addEventListener('click', function() {
+                const noteText = noteInput.value.trim();
+                if (noteText !== '') {
+                    addNoteToStorage(noteText);
+                    noteInput.value = '';
+                }
+            });
+
+            function loadNotes() {
+                notesList.innerHTML = '';
+                const notes = getNotesFromStorage();
+                notes.forEach((note, index) => {
+                    const { text, time } = note;
+                    const noteDiv = document.createElement('div');
+                    noteDiv.classList.add('note');
+
+                    const noteText = document.createElement('p');
+                    noteText.classList.add('note-text');
+                    noteText.textContent = text;
+
+                    const noteTime = document.createElement('p');
+                    noteTime.classList.add('note-time');
+                    noteTime.textContent = formatDate(time);
+
+                    const editBtn = document.createElement('span');
+                    editBtn.classList.add('edit-btn');
+                    editBtn.textContent = 'Edit';
+                    editBtn.addEventListener('click', function() {
+                        editNote(index);
+                    });
+
+                    const deleteBtn = document.createElement('span');
+                    deleteBtn.classList.add('delete-btn');
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.addEventListener('click', function() {
+                        deleteNoteFromStorage(index);
+                    });
+
+                    noteDiv.appendChild(noteText);
+                    noteDiv.appendChild(noteTime);
+                    noteDiv.appendChild(editBtn);
+                    noteDiv.appendChild(deleteBtn);
+                    notesList.appendChild(noteDiv);
+                });
+            }
+
+            function addNoteToStorage(noteText) {
+                const time = new Date().getTime();
+                let notes = getNotesFromStorage();
+                notes.push({ text: noteText, time });
+                localStorage.setItem('notes', JSON.stringify(notes));
+                loadNotes();
+            }
+
+            function editNote(index) {
+                const notes = getNotesFromStorage();
+                const noteText = prompt('Edit your note:', notes[index].text);
+                if (noteText !== null) {
+                    notes[index].text = noteText.trim();
+                    notes[index].time = new Date().getTime(); // Update the edit time
+                    localStorage.setItem('notes', JSON.stringify(notes));
+                    loadNotes();
+                }
+            }
+
+            function getNotesFromStorage() {
+                return JSON.parse(localStorage.getItem('notes')) || [];
+            }
+
+            function deleteNoteFromStorage(index) {
+                let notes = getNotesFromStorage();
+                notes.splice(index, 1);
+                localStorage.setItem('notes', JSON.stringify(notes));
+                loadNotes();
+            }
+
+            function formatDate(timestamp) {
+                const date = new Date(timestamp);
+                return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+            }
+        });
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Notes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .note {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .note-text {
+            margin-bottom: 10px;
+        }
+        .note-time {
+            font-size: 12px;
+            color: #888;
+        }
+        .btn {
+            padding: 8px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .edit-btn, .delete-btn {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 3px 8px;
+            font-size: 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="welcomeContainer">
+        <h1 id="welcomeMsg">Welcome to Notes</h1>
+        <button id="startBtn" class="btn">Start</button>
+    </div>
+
+    <div class="container" id="notesContainer" style="display: none;">
+        <h2>Note</h2>
+        <p>Topic and Content :</p>
+        <textarea id="noteInput" rows="4" cols="50"></textarea><br>
+        <button id="addNoteBtn" class="btn">Add Note</button>
+        <button id="backBtn" class="btn" style="margin-left: 10px;">Back</button>
+        
+        <div id="notesList"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeContainer = document.getElementById('welcomeContainer');
+            const notesContainer = document.getElementById('notesContainer');
+            const welcomeMsg = document.getElementById('welcomeMsg');
+            const startBtn = document.getElementById('startBtn');
+            const backBtn = document.getElementById('backBtn');
+            const noteInput = document.getElementById('noteInput');
+            const addNoteBtn = document.getElementById('addNoteBtn');
+            const notesList = document.getElementById('notesList');
+
+            startBtn.addEventListener('click', function() {
+                welcomeContainer.style.display = 'none';
+                notesContainer.style.display = 'block';
+                loadNotes();
+            });
+
+            backBtn.addEventListener('click', function() {
+                notesContainer.style.display = 'none';
+                welcomeContainer.style.display = 'block';
+                welcomeMsg.style.display = 'block';
+                startBtn.style.display = 'block';
+            });
+
+            addNoteBtn.addEventListener('click', function() {
+                const noteText = noteInput.value.trim();
+                if (noteText !== '') {
+                    addNoteToStorage(noteText);
+                    noteInput.value = '';
+                }
+            });
+
+            function loadNotes() {
+                notesList.innerHTML = '';
+                const notes = getNotesFromStorage();
+                notes.forEach((note, index) => {
+                    const { text, time } = note;
+                    const noteDiv = document.createElement('div');
+                    noteDiv.classList.add('note');
+
+                    const noteText = document.createElement('p');
+                    noteText.classList.add('note-text');
+                    noteText.textContent = text;
+
+                    const noteTime = document.createElement('p');
+                    noteTime.classList.add('note-time');
+                    noteTime.textContent = formatDate(time);
+
+                    const editBtn = document.createElement('span');
+                    editBtn.classList.add('edit-btn');
+                    editBtn.textContent = 'Edit';
+                    editBtn.addEventListener('click', function() {
+                        editNote(index);
+                    });
+
+                    const deleteBtn = document.createElement('span');
+                    deleteBtn.classList.add('delete-btn');
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.addEventListener('click', function() {
+                        deleteNoteFromStorage(index);
+                    });
+
+                    noteDiv.appendChild(noteText);
+                    noteDiv.appendChild(noteTime);
+                    noteDiv.appendChild(editBtn);
+                    noteDiv.appendChild(deleteBtn);
+                    notesList.appendChild(noteDiv);
+                });
+
+                setNoteBoxColor();
+            }
+
+            function addNoteToStorage(noteText) {
+                const time = new Date().getTime();
+                let notes = getNotesFromStorage();
+                notes.push({ text: noteText, time });
+                localStorage.setItem('notes', JSON.stringify(notes));
+                loadNotes();
+            }
+
+            function editNote(index) {
+                const notes = getNotesFromStorage();
+                const noteText = prompt('Edit your note:', notes[index].text);
+                if (noteText !== null) {
+                    notes[index].text = noteText.trim();
+                    notes[index].time = new Date().getTime();
+                    localStorage.setItem('notes', JSON.stringify(notes));
+                    loadNotes();
+                }
+            }
+
+            function getNotesFromStorage() {
+                return JSON.parse(localStorage.getItem('notes')) || [];
+            }
+
+            function deleteNoteFromStorage(index) {
+                let notes = getNotesFromStorage();
+                notes.splice(index, 1);
+                localStorage.setItem('notes', JSON.stringify(notes));
+                loadNotes();
+            }
+
+            function formatDate(timestamp) {
+                const date = new Date(timestamp);
+                return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+            }
+
+            function setNoteBoxColor() {
+                const currentDate = new Date();
+                const currentDay = currentDate.getDay();
+                const currentHour = currentDate.getHours();
+                const currentMinute = currentDate.getMinutes();
+                const notes = document.querySelectorAll('.note');
+
+                const colorRanges = {
+                    0: { ranges: [
+                            { start: 0, end: 5.59, color: '#FF7B7B' },
+                            { start: 6, end: 11.59, color: '#FF8986' },
+                            { start: 12, end: 12.59, color: '#FF9997' },
+                            { start: 13, end: 15.59, color: '#FFA9A9' },
+                            { start: 16, end: 18.59, color: '#FC9994' },
+                            { start: 19, end: 23.59, color: '#F98581' },
+                        ] },
+                    1: { ranges: [
+                            { start: 0, end: 5.59, color: '#F9E795' },
+                            { start: 6, end: 11.59, color: '#FDDF8E' },
+                            { start: 12, end: 12.59, color: '#FBEE95' },
+                            { start: 13, end: 15.59, color: '#FCF695' },
+                            { start: 16, end: 18.59, color: '#FEEFC6' },
+                            { start: 19, end: 23.59, color: '#FEE7AA' },
+                        ] },
+                    2: { ranges: [
+                            { start: 0, end: 5.59, color: '#ECBDC4' },
+                            { start: 6, end: 11.59, color: '#FFB3C6' },
+                            { start: 12, end: 12.59, color: '#FFC2D1' },
+                            { start: 13, end: 15.59, color: '#FFE5EC' },
+                            { start: 16, end: 18.59, color: '#F5DCE0' },
+                            { start: 19, end: 23.59, color: '#EFCFD4' },
+                        ] },
+                    3: { ranges: [
+                            { start: 0, end: 5.59, color: '#AEDCAE' },
+                            { start: 6, end: 11.59, color: '#BEE3BA' },
+                            { start: 12, end: 12.59, color: '#CDEBC5' },
+                            { start: 13, end: 15.59, color: '#DDF2D1' },
+                            { start: 16, end: 18.59, color: '#E4F3D8' },
+                            { start: 19, end: 23.59, color: '#C8E6B2' },
+                        ] },
+                    4: { ranges: [
+                            { start: 0, end: 5.59, color: '#D7D0FF' },
+                            { start: 6, end: 11.59, color: '#E0D8FF' },
+                            { start: 12, end: 12.59, color: '#E8E0FF' },
+                            { start: 13, end: 15.59, color: '#EFE9FF' },
+                            { start: 16, end: 18.59, color: '#F3EEFF' },
+                            { start: 19, end: 23.59, color: '#E6DBFF' },
+                        ] },
+                    5: { ranges: [
+                            { start: 0, end: 5.59, color: '#F5D6E0' },
+                            { start: 6, end: 11.59, color: '#FCD6F3' },
+                            { start: 12, end: 12.59, color: '#F5D6E0' },
+                            { start: 13, end: 15.59, color: '#FFD6E8' },
+                            { start: 16, end: 18.59, color: '#FFE6EE' },
+                            { start: 19, end: 23.59, color: '#FFD6E8' },
+                        ] },
+                    6: { ranges: [
+                            { start: 0, end: 5.59, color: '#A7E7FF' },
+                            { start: 6, end: 11.59, color: '#D4F4FF' },
+                            { start: 12, end: 12.59, color: '#A7E7FF' },
+                            { start: 13, end: 15.59, color: '#D4F4FF' },
+                            { start: 16, end: 18.59, color: '#C8F0FF' },
+                            { start: 19, end: 23.59, color: '#C8F0FF' },
+                        ] }
+                };
+
+                const currentRanges = colorRanges[currentDay].ranges;
+                const currentTime = currentHour + currentMinute / 60;
+
+                currentRanges.forEach(range => {
+                    if (currentTime >= range.start && currentTime <= range.end) {
+                        notes.forEach(note => {
+                            note.style.backgroundColor = range.color;
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
